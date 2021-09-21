@@ -2,7 +2,7 @@
   "name": "g4api-ts-support",
   "version": "0.1.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
     "generate": "npm ci; tsc -d; typedoc src/index.ts"
