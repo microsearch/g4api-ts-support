@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
-    "generate": "npm ci; tsc -d; typedoc src/index.ts"
+    "install": "npm run build",
+    "generate": "npm ci; tsc; typedoc src/index.ts"
   },
   "keywords": [],
   "author": "Ferruccio Barletta (ferruccio.barletta@gmail.com)",
