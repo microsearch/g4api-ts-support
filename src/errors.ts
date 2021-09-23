@@ -3,7 +3,7 @@ import axios from "axios";
 export { G4ApiError, getG4ApiError };
 
 type G4ApiError = {
-  source: "network" | "http" | "auth" | "g4" | "validation" | "other";
+  source: "network" | "http" | "auth" | "g4" | "other";
   code?: string;
   message: string;
   details?: object;
@@ -27,6 +27,7 @@ function getG4ApiError(error: unknown): G4ApiError {
   if (typeof g4error !== "undefined") {
     return {
       source: "g4",
+      code: "failure",
       message: g4error,
     };
   }
@@ -37,7 +38,8 @@ function getG4ApiError(error: unknown): G4ApiError {
         const statusText = error.response?.data.statusText;
         if (typeof statusText === "undefined") {
           return {
-            source: "validation",
+            source: "g4",
+            code: "validation",
             message: "request validation error",
             details: error.response?.data.errors,
           };
@@ -55,11 +57,13 @@ function getG4ApiError(error: unknown): G4ApiError {
         return {
           source: "http",
           message: `status: ${status}`,
+          details: { status },
         };
     }
   }
   return {
     source: "other",
     message: `${error.name}: ${error.message}`,
+    details: error,
   };
 }
