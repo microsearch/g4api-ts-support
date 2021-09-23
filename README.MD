@@ -75,7 +75,7 @@ async function authenticate(): Promise<g4.UserAuthenticationResponse> {
 
   // Network error. This is the only error that sets the `code` field.
   // You can use to determine the exact nature of the error. e.g. a bad URL as
-  // shown below will set code to "ENOENT".
+  // shown below will set code to "ENOTFOUND".
   console.log("\nnetwork error\n---");
   try {
     const g4auth = new g4.Auth({ baseURL: "https://bogus-url.xyzzy" });
@@ -117,8 +117,8 @@ async function authenticate(): Promise<g4.UserAuthenticationResponse> {
     console.log(getG4ApiError(error));
   }
 
-  // ASP.NET validation returned a 400 error with no status text.
-  // Details were encoded as a JSON object in the response body.
+  // ASP.NET validation failures return a 400 error with no status text.
+  // Details are encoded as a JSON object in the response body.
   console.log("\nasp.net error - validation error\n---");
   try {
     const auth = await authenticate();

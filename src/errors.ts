@@ -6,6 +6,7 @@ type G4ApiError = {
   source: "network" | "http" | "auth" | "g4" | "validation" | "other";
   code?: string;
   message: string;
+  details?: object;
 };
 
 function getG4ApiError(error: unknown): G4ApiError {
@@ -37,7 +38,8 @@ function getG4ApiError(error: unknown): G4ApiError {
         if (typeof statusText === "undefined") {
           return {
             source: "validation",
-            message: JSON.stringify(error.response?.data.errors),
+            message: "request validation error",
+            details: error.response?.data.errors,
           };
         }
         return {
