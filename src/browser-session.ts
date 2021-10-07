@@ -14,7 +14,10 @@ class G4BrowserSession extends G4Api {
     this.localStorageKey = `g4-${options.application ?? "app"}-session`;
     try {
       if (this.loadSession()) {
-        this.interval = setInterval(() => this.syncRefresh(), REFRESH_INTERVAL);
+        this.intervalId = setInterval(
+          () => this.syncRefresh(),
+          REFRESH_INTERVAL
+        );
       }
       this.syncRefresh();
     } catch (error) {
@@ -36,7 +39,7 @@ class G4BrowserSession extends G4Api {
     this.bearer = response.bearer;
     this.authentication = response.accessAllowed ? { ...response } : null;
     if (this.connected()) {
-      this.interval = setInterval(() => this.syncRefresh(), REFRESH_INTERVAL);
+      this.intervalId = setInterval(() => this.syncRefresh(), REFRESH_INTERVAL);
     }
     this.saveSession();
     return response;
@@ -46,7 +49,7 @@ class G4BrowserSession extends G4Api {
     if (this.connected()) {
       this.authentication = null;
       this.saveSession();
-      clearInterval(this.interval!);
+      clearInterval(this.intervalId!);
     }
   }
 
@@ -95,6 +98,6 @@ class G4BrowserSession extends G4Api {
   }
 
   private localStorageKey: string;
-  private interval: number | null = null;
+  private intervalId: null | ReturnType<typeof setInterval> = null;
   private authentication: g4.UserAuthenticationResponse | null = null;
 }
