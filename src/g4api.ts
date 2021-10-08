@@ -17,12 +17,12 @@ const DEFAULT_REQUEST_TIMEOUT = 30 * 1000; // ms
 
 class G4Api {
   constructor(options: G4ApiOptions) {
+    let headers: Record<string, string> = {};
+    if (options.tenant) headers["x-g4-tenant"] = options.tenant;
+    if (options.application) headers["x-g4-application"] = options.application;
     this.config = {
       baseURL: options.baseURL,
-      headers: {
-        "x-g4-tenant": options.tenant ?? undefined,
-        "x-g4-application": options.application ?? undefined,
-      },
+      headers: headers,
       timeout: DEFAULT_REQUEST_TIMEOUT,
     };
     this.options = { ...options };
