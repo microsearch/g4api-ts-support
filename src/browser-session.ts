@@ -73,6 +73,26 @@ class G4BrowserSession extends G4Api {
     }
   }
 
+  setSessionItem(key: string, value: string) {
+    window.sessionStorage.setItem(key, value);
+  }
+
+  getSessionItem(key: string) {
+    return window.sessionStorage.getItem(key);
+  }
+
+  get username(): string | null {
+    return this.connected() ? this.authentication!.username : null;
+  }
+
+  get fullname() {
+    return this.connected() ? this.authentication?.fullname : null;
+  }
+
+  get claims() {
+    return this.authentication?.claims ?? [];
+  }
+
   private syncRefresh() {
     (async () => await this.refresh())();
   }
