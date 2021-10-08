@@ -1,6 +1,6 @@
 import * as g4 from "g4api-ts";
 
-export { G4ApiOptions, G4Api };
+export { G4ApiOptions, G4ApiCloneOptions, G4Api };
 
 type G4ApiOptions = {
   baseURL: string;
@@ -8,7 +8,7 @@ type G4ApiOptions = {
   application?: string;
 };
 
-type CloneOptions = {
+type G4ApiCloneOptions = {
   tenant?: string;
   application?: string;
 };
@@ -31,7 +31,7 @@ class G4Api {
   /*
     Clone a G4Api with a different tenant or application.
   */
-  clone(options: CloneOptions) {
+  clone(options: G4ApiCloneOptions) {
     return new G4Api({
       baseURL: this.options.baseURL,
       tenant: options.tenant ?? this.options.tenant,
