@@ -3,7 +3,7 @@ import * as g4 from "g4api-ts";
 export { G4ApiOptions, G4Api };
 
 type G4ApiOptions = {
-  stage: "prod" | "dev" | "test";
+  baseURL: string;
   tenant?: string;
   application?: string;
 };
@@ -13,7 +13,7 @@ const DEFAULT_REQUEST_TIMEOUT = 30 * 1000; // ms
 class G4Api {
   constructor(options: G4ApiOptions) {
     this.config = {
-      baseURL: `https://g4-${options.stage}.v1.mrcapi.net`,
+      baseURL: options.baseURL,
       headers: {
         "x-g4-tenants": options.tenant ?? undefined,
         "x-g4-application": options.application ?? undefined,
