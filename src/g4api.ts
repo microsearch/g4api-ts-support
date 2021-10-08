@@ -52,6 +52,10 @@ class G4Api {
     this.config.timeout = timeout * 1000;
   }
 
+  get endpoint() {
+    return this.options.baseURL;
+  }
+
   get admin() {
     return new g4.Admin(this.config);
   }
