@@ -8,6 +8,11 @@ type G4ApiOptions = {
   application?: string;
 };
 
+type CloneOptions = {
+  tenant?: string;
+  application?: string;
+};
+
 const DEFAULT_REQUEST_TIMEOUT = 30 * 1000; // ms
 
 class G4Api {
@@ -15,11 +20,23 @@ class G4Api {
     this.config = {
       baseURL: options.baseURL,
       headers: {
-        "x-g4-tenants": options.tenant ?? undefined,
+        "x-g4-tenant": options.tenant ?? undefined,
         "x-g4-application": options.application ?? undefined,
       },
       timeout: DEFAULT_REQUEST_TIMEOUT,
     };
+    this.options = { ...options };
+  }
+
+  /*
+    Clone a G4Api with a different tenant or application.
+  */
+  clone(options: CloneOptions) {
+    return new G4Api({
+      baseURL: this.options.baseURL,
+      tenant: options.tenant ?? this.options.tenant,
+      application: options.application ?? this.options.application,
+    });
   }
 
   set bearer(bearer: string) {
@@ -158,5 +175,6 @@ class G4Api {
     return new g4.Users(this.config);
   }
 
+  private options: G4ApiOptions;
   private config: g4.ApiConfig;
 }
