@@ -60,7 +60,7 @@ class G4BrowserSession extends G4Api {
     if (this.connected()) {
       this.disconnect();
     }
-    const response = (await this.auth.authCreate({ username, password })).data;
+    const response = (await this.auth.post({ username, password })).data;
     this.bearer = response.bearer;
     this.authentication = response.accessAllowed ? { ...response } : null;
     if (this.connected()) {
@@ -85,7 +85,7 @@ class G4BrowserSession extends G4Api {
   async refresh() {
     try {
       if (this.authentication !== null) {
-        const response = (await this.auth.authList()).data;
+        const response = (await this.auth.get()).data;
         this.authentication.username = response.username;
         this.authentication.claims = response.claims;
         this.authentication.bearer = response.bearer;

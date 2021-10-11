@@ -43,7 +43,7 @@ async function authenticate(): Promise<g4.UserAuthenticationResponse> {
   try {
     const g4auth = new g4.Auth({ baseURL });
     const response = (
-      await g4auth.authCreate({
+      await g4auth.post({
         // use real credentials here
         username: "bender",
         password: "meatbag",
@@ -67,7 +67,7 @@ async function authenticate(): Promise<g4.UserAuthenticationResponse> {
     });
     // Since any errors will throw an exception, we can safely assume that
     // there is a valid `data` field in the result object.
-    const response = (await g4user.userDetail(1)).data;
+    const response = (await g4user.get(1)).data;
     console.log(response);
   } catch (error: unknown) {
     console.log(getG4ApiError(error));
@@ -80,7 +80,7 @@ async function authenticate(): Promise<g4.UserAuthenticationResponse> {
   try {
     const g4auth = new g4.Auth({ baseURL: "https://bogus-url.xyzzy" });
     const response = (
-      await g4auth.authCreate({
+      await g4auth.post({
         username: "bender",
         password: "meatbag",
       })
@@ -97,7 +97,7 @@ async function authenticate(): Promise<g4.UserAuthenticationResponse> {
       baseURL,
       headers: { authorization: "bearer not-a-valid-token" },
     });
-    const response = (await g4user.userDetail(1)).data;
+    const response = (await g4user.get(1)).data;
     console.log(response);
   } catch (error: unknown) {
     console.log(getG4ApiError(error));
@@ -111,7 +111,7 @@ async function authenticate(): Promise<g4.UserAuthenticationResponse> {
       baseURL,
       headers: { authorization: `bearer ${auth.bearer}`, "x-g4-tenant": "nso" },
     });
-    const response = (await g4user.userDetail(1_000_000)).data;
+    const response = (await g4user.get(1_000_000)).data;
     console.log(response);
   } catch (error: unknown) {
     console.log(getG4ApiError(error));
@@ -126,7 +126,7 @@ async function authenticate(): Promise<g4.UserAuthenticationResponse> {
       baseURL,
       headers: { authorization: `bearer ${auth.bearer}` },
     });
-    const response = (await g4user.userDetail(1)).data;
+    const response = (await g4user.get(1)).data;
     console.log(response);
   } catch (error: unknown) {
     console.log(getG4ApiError(error));
