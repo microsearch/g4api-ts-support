@@ -124,9 +124,12 @@ class G4BrowserSession extends G4Api {
 
   private loadSession() {
     const session = window.localStorage.getItem(this.localStorageKey);
-    this.authentication = session === null ? null : JSON.parse(session);
-    if (this.authentication === null) {
+    if (session === null) {
+      this.authentication = null;
       window.localStorage.removeItem(this.localStorageKey);
+    } else {
+      this.authentication = JSON.parse(session);
+      this.bearer = this.authentication!.bearer;
     }
     return this.connected();
   }
