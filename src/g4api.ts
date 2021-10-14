@@ -32,11 +32,14 @@ class G4Api {
     Clone a G4Api with a different tenant or application.
   */
   clone(options: G4ApiCloneOptions) {
-    return new G4Api({
+    const g4api = new G4Api({
       baseURL: this.options.baseURL,
       tenant: options.tenant ?? this.options.tenant,
       application: options.application ?? this.options.application,
     });
+    g4api.config.headers["authorization"] =
+      this.config.headers["authorization"];
+    return g4api;
   }
 
   set bearer(bearer: string) {
