@@ -3,7 +3,7 @@ import * as g4 from "g4api-ts";
 export { G4ApiOptions, G4ApiCloneOptions, G4Api };
 
 type G4ApiOptions = {
-  baseURL: string;
+  endpoint: string;
   tenant?: string;
   application?: string;
 };
@@ -20,8 +20,10 @@ class G4Api {
     let headers: Record<string, string> = {};
     if (options.tenant) headers["x-g4-tenant"] = options.tenant;
     if (options.application) headers["x-g4-application"] = options.application;
+    if (options.endpoint.match(/^[a-z]+$/))
+      options.endpoint = `https://g4-${options.endpoint}.v1.mrcapi.net`;
     this.config = {
-      baseURL: options.baseURL,
+      baseURL: options.endpoint,
       headers: headers,
       timeout: DEFAULT_REQUEST_TIMEOUT,
     };
@@ -33,7 +35,7 @@ class G4Api {
   */
   clone(options: G4ApiCloneOptions) {
     const g4api = new G4Api({
-      baseURL: this.options.baseURL,
+      endpoint: this.options.endpoint,
       tenant: options.tenant ?? this.options.tenant,
       application: options.application ?? this.options.application,
     });
@@ -42,12 +44,18 @@ class G4Api {
     return g4api;
   }
 
+  get bearer() {
+    return this.bearerToken;
+  }
+
   set bearer(bearer: string) {
+    this.bearerToken = bearer;
     this.config.headers["authorization"] = `bearer ${bearer}`;
   }
 
   set apikey(apikey: string) {
     this.config.headers["authorization"] = `apikey ${apikey}`;
+    this.bearerToken = "";
   }
 
   // set timeout in seconds
@@ -56,7 +64,7 @@ class G4Api {
   }
 
   get endpoint() {
-    return this.options.baseURL;
+    return this.options.endpoint;
   }
 
   get admin() {
@@ -184,4 +192,5 @@ class G4Api {
 
   private options: G4ApiOptions;
   private config: g4.ApiConfig;
+  private bearerToken = "";
 }
