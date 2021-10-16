@@ -1,6 +1,6 @@
 {
   "name": "g4api-ts-support",
-  "version": "1.4.10",
+  "version": "1.4.11",
   "description": "Support tools for g4api-ts module",
   "main": "lib/index.js",
   "scripts": {

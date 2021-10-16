@@ -3,3 +3,4 @@ export * from "g4api-ts";
 export * from "./errors";
 export * from "./g4api";
 export * from "./browser-session";
+export * from "./notifications";
