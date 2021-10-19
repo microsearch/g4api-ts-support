@@ -5,7 +5,6 @@ type G4NotificationOptions = {
   tenant: string;
   bearer: string;
   onerror?: (event: Event) => void;
-  onclose?: () => void;
   subs: G4Subscriptions;
 };
 
@@ -105,10 +104,8 @@ type G4CollectionLoadedMessage = {
 function subscribe(options: G4NotificationOptions) {
   if (options.endpoint.match(/^[a-z]+$/))
     options.endpoint = `wss://g4n-${options.endpoint}.v1.mrcapi.net`;
-  const socket = new WebSocket(options.endpoint);
-  if (options.onerror) socket.onerror = options.onerror;
-  if (options.onclose) socket.onclose = options.onclose;
-  socket.onmessage = (messageEvent: MessageEvent<string>) => {
+
+  const onmessage = (messageEvent: MessageEvent<string>) => {
     const message = JSON.parse(messageEvent.data) as {
       Subject: string;
       Message: string;
@@ -121,7 +118,10 @@ function subscribe(options: G4NotificationOptions) {
       dispatchEvent(options.subs, className, event, message.Message);
     }
   };
-  socket.onopen = () => {
+
+  let socket = new WebSocket(options.endpoint);
+
+  const onopen = () => {
     socket.send(
       JSON.stringify({
         action: "subscribe",
@@ -131,7 +131,27 @@ function subscribe(options: G4NotificationOptions) {
       })
     );
   };
-  return () => socket.close();
+
+  let reopen = true;
+  const onclose = () => {
+    if (reopen) {
+      socket = new WebSocket(options.endpoint);
+      socket.onmessage = onmessage;
+      socket.onopen = onopen;
+      socket.onclose = onclose;
+      if (options.onerror) socket.onerror = options.onerror;
+    }
+  };
+
+  socket.onmessage = onmessage;
+  socket.onopen = onopen;
+  socket.onclose = onclose;
+  if (options.onerror) socket.onerror = options.onerror;
+
+  return () => {
+    reopen = false;
+    socket.close();
+  };
 }
 
 function dispatchEvent(
