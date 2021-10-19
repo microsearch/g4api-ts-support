@@ -1,3 +1,17 @@
+import {
+  G4AuthAuthMessage,
+  G4CollectionLoadedMessage,
+  G4CollectionLoadingMessage,
+  G4DocumentLoadedMessage,
+  G4SessionCloseMessage,
+  G4SessionCreateMessage,
+  G4SessionFailMessage,
+  G4UserArchiveMessage,
+  G4UserCreateMessage,
+  G4UserImportMessage,
+  G4UserUpdateMessage,
+} from "g4api-ts";
+
 export { subscribe };
 
 type G4NotificationOptions = {
@@ -24,81 +38,12 @@ type G4Subscriptions = {
     archive?: (message: G4UserArchiveMessage) => void;
   };
   document?: {
-    load?: (message: G4DocumentLoadMessage) => void;
+    load?: (message: G4DocumentLoadedMessage) => void;
   };
   collection?: {
     loading?: (message: G4CollectionLoadingMessage) => void;
     loaded?: (message: G4CollectionLoadedMessage) => void;
   };
-};
-
-type G4AuthAuthMessage = {
-  validCredentials: boolean;
-  accessAllowed: boolean;
-  username: string;
-  host: string;
-};
-
-type G4SessionCreateMessage = {
-  sessionId: string;
-  username: string;
-  host: string;
-};
-
-type G4SessionCloseMessage = {
-  sessionId: string;
-  host: string;
-};
-
-type G4SessionFailMessage = {
-  username: string;
-  host: string;
-};
-
-type G4UserCreateMessage = {
-  username: string;
-  id: number;
-  host: string;
-};
-
-type G4UserImportMessage = {
-  username: string;
-  id: number;
-  host: string;
-};
-
-type G4UserArchiveMessage = {
-  id: number;
-  host: string;
-};
-
-type G4UserUpdateMessage = {
-  username: string;
-  id: number;
-  host: string;
-};
-
-type G4DocumentLoadMessage = {
-  username: string;
-  docid: number;
-  signature: string;
-  doctype: string | null;
-  filename: string | null;
-  loaded: string | null;
-  policies: string[];
-  jobid: string | null;
-};
-
-type G4CollectionLoadingMessage = {
-  count: number;
-  name: string;
-  title: string;
-};
-
-type G4CollectionLoadedMessage = {
-  count: number;
-  name: string;
-  title: string;
 };
 
 function subscribe(options: G4NotificationOptions) {
@@ -220,7 +165,7 @@ function dispatch_document(
 ) {
   switch (event) {
     case "load":
-      return dispatch<G4DocumentLoadMessage>(message, subs.document?.load);
+      return dispatch<G4DocumentLoadedMessage>(message, subs.document?.load);
   }
 }
 
