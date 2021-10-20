@@ -17,7 +17,7 @@ export { subscribe };
 type G4NotificationOptions = {
   endpoint: string;
   tenant: string;
-  bearer: string;
+  bearer: () => string;
   onerror?: (event: Event) => void;
   subs: G4Subscriptions;
 };
@@ -72,7 +72,7 @@ function subscribe(options: G4NotificationOptions) {
         action: "subscribe",
         tenant: options.tenant,
         events: events(options),
-        bearer: options.bearer,
+        bearer: options.bearer(),
       })
     );
   };
