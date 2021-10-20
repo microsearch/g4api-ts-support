@@ -71,7 +71,7 @@ function subscribe(options: G4NotificationOptions) {
       JSON.stringify({
         action: "subscribe",
         tenant: options.tenant,
-        events: events(options),
+        events: events(options.subs),
         bearer: options.bearer(),
       })
     );
@@ -188,9 +188,9 @@ function dispatch_collection(
   }
 }
 
-function events(options: G4NotificationOptions) {
+function events(subs: G4Subscriptions) {
   let events: string[] = [];
-  for (const [_class, _events] of Object.entries(options.subs)) {
+  for (const [_class, _events] of Object.entries(subs)) {
     for (const [_event] of Object.entries(_events)) {
       events.push(`${_class}.${_event}`);
     }
