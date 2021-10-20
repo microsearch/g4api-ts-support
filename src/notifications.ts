@@ -12,7 +12,7 @@ import {
   G4UserUpdateMessage,
 } from "g4api-ts";
 
-export { subscribe };
+export { subscribe, G4NotificationOptions, G4Subscriptions };
 
 type G4NotificationOptions = {
   endpoint: string;
