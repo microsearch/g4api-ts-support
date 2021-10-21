@@ -38,7 +38,7 @@ type G4Subscriptions = {
     archive?: (message: G4UserArchiveMessage) => void;
   };
   document?: {
-    load?: (message: G4DocumentLoadedMessage) => void;
+    loaded?: (message: G4DocumentLoadedMessage) => void;
   };
   collection?: {
     loading?: (message: G4CollectionLoadingMessage) => void;
@@ -164,8 +164,8 @@ function dispatch_document(
   message: string
 ) {
   switch (event) {
-    case "load":
-      return dispatch<G4DocumentLoadedMessage>(message, subs.document?.load);
+    case "loaded":
+      return dispatch<G4DocumentLoadedMessage>(message, subs.document?.loaded);
   }
 }
 
