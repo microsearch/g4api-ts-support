@@ -6,6 +6,8 @@ import {
   G4SessionCloseMessage,
   G4SessionCreateMessage,
   G4SessionFailMessage,
+  G4TenantArchiveMessage,
+  G4TenantCreateMessage,
   G4UserArchiveMessage,
   G4UserCreateMessage,
   G4UserImportMessage,
@@ -44,6 +46,10 @@ type G4Subscriptions = {
     loading?: (message: G4CollectionLoadingMessage) => void;
     loaded?: (message: G4CollectionLoadedMessage) => void;
   };
+  tenant?: {
+    create?: (message: G4TenantCreateMessage) => void;
+    archive?: (message: G4TenantArchiveMessage) => void;
+  };
 };
 
 function subscribe(options: G4NotificationOptions) {
@@ -56,7 +62,7 @@ function subscribe(options: G4NotificationOptions) {
       Message: string;
     };
     const matches = [
-      ...message.Subject.matchAll(/^([A-Z]+):([a-z]+)\.([a-z]+)$/g),
+      ...message.Subject.matchAll(/^([A-Z]+|<G4ADMIN>):([a-z]+)\.([a-z]+)$/g),
     ];
     if (matches.length !== 0) {
       const [, , className, event] = matches[0];
@@ -99,6 +105,16 @@ function subscribe(options: G4NotificationOptions) {
   };
 }
 
+function events(subs: G4Subscriptions) {
+  let events: string[] = [];
+  for (const [_class, _events] of Object.entries(subs)) {
+    for (const [_event] of Object.entries(_events)) {
+      events.push(`${_class}.${_event}`);
+    }
+  }
+  return events;
+}
+
 function dispatchEvent(
   subs: G4Subscriptions,
   className: string,
@@ -116,10 +132,15 @@ function dispatchEvent(
       return dispatch_document(subs, event, message);
     case "collection":
       return dispatch_collection(subs, event, message);
+    case "tenant":
+      return dispatch_tenant(subs, event, message);
   }
 }
 
 function dispatch<T>(message: string, dispatcher?: (message: T) => void) {
+  console.log(
+    `dispatching: ${message} dispatcher: ${dispatcher ? "yes" : "no"}`
+  );
   if (dispatcher) dispatcher(JSON.parse(message) as T);
 }
 
@@ -188,12 +209,15 @@ function dispatch_collection(
   }
 }
 
-function events(subs: G4Subscriptions) {
-  let events: string[] = [];
-  for (const [_class, _events] of Object.entries(subs)) {
-    for (const [_event] of Object.entries(_events)) {
-      events.push(`${_class}.${_event}`);
-    }
+function dispatch_tenant(
+  subs: G4Subscriptions,
+  event: string,
+  message: string
+) {
+  switch (event) {
+    case "create":
+      return dispatch<G4TenantCreateMessage>(message, subs.tenant?.create);
+    case "archive":
+      return dispatch<G4TenantArchiveMessage>(message, subs.tenant?.archive);
   }
-  return events;
 }

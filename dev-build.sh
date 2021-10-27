@@ -6,4 +6,4 @@ npm run generate-local
 popd
 
 \cp -rv ../g4api-ts/* ./node_modules/g4api-ts
-npm run generate
+npm run build
