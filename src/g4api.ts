@@ -48,9 +48,13 @@ class G4Api {
     return this.bearerToken;
   }
 
-  set bearer(bearer: string) {
-    this.bearerToken = bearer;
-    this.config.headers["authorization"] = `bearer ${bearer}`;
+  set bearer(bearer: string | null) {
+    if (bearer === null) {
+      this.bearerToken = "";
+    } else {
+      this.bearerToken = bearer;
+      this.config.headers["authorization"] = `bearer ${bearer}`;
+    }
   }
 
   set apikey(apikey: string) {
