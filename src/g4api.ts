@@ -6,6 +6,7 @@ type G4ApiOptions = {
   endpoint: string;
   tenant?: string;
   application?: string;
+  sessionId?: string;
 };
 
 type G4ApiCloneOptions = {
@@ -22,6 +23,7 @@ class G4Api {
     if (options.application) headers["x-g4-application"] = options.application;
     if (options.endpoint.match(/^[a-z]+$/))
       options.endpoint = `https://g4-${options.endpoint}.v1.mrcapi.net`;
+    if (options.sessionId) headers["x-g4-session-id"] = options.sessionId;
     this.config = {
       baseURL: options.endpoint,
       headers: headers,
@@ -38,6 +40,7 @@ class G4Api {
       endpoint: this.options.endpoint,
       tenant: options.tenant ?? this.options.tenant,
       application: options.application ?? this.options.application,
+      sessionId: this.options.sessionId,
     });
     g4api.config.headers["authorization"] =
       this.config.headers["authorization"];
